@@ -1,0 +1,29 @@
+type file
+id PeakSimulator
+title
+    PeakSimulator
+owners
+    Kevin Frey
+authors 
+    Kevin Frey
+projectUrl
+    https://github.com/Kevin Frey/PeakSimulator
+iconUrl
+    https://raw.githubusercontent.com/Kevin Frey/PeakSimulator/master/docs/files/img/logo.png
+licenseUrl
+    https://github.com/Kevin Frey/PeakSimulator/blob/master/LICENSE.txt
+requireLicenseAcceptance
+    false
+language
+    F#
+copyright
+    Copyright 2017
+tags
+    Chromatogram Simulator Simulation Peaks Peak
+summary
+    A short randomized simulator for peaks/whole chromatograms.
+description
+    A short randomized simulator for peaks/whole chromatograms.
+
+files
+	../../bin/PeakSimulator ==> lib
