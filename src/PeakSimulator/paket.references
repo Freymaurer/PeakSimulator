@@ -1,1 +1,7 @@
 FSharp.Core
+FSharpAux
+FSharpAux.IO
+FSharp.Stats
+BioFSharp
+BioFSharp.IO
+BioFSharp.Stats

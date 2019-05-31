@@ -10,6 +10,19 @@ nuget Expecto.BenchmarkDotNet
 nuget Expecto.FsCheck
 nuget Expecto.VisualStudio.TestAdapter version_in_path: true
 
+git https://github.com/CSBiology/FSharpAux.git nuget Packages: /
+nuget FSharpAux
+nuget FSharpAux.IO
+
+git https://github.com/CSBiology/FSharp.Stats.git nuget Packages: /
+nuget FSharp.Stats
+nuget FSharp.Stats.MSF
+
+git https://github.com/CSBiology/BioFSharp nuget Packages: /
+nuget BioFSharp
+nuget BioFSharp.IO
+nuget BioFSharp.Stats
+
 clitool dotnet-fake
 
 group Formatting
