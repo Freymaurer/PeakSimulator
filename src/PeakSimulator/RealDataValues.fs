@@ -9,71 +9,70 @@ namespace PeakSimulator
 ///     printfn "%d" h
 ///
 
-    
-module AuxFunctions =
-    
-    module AuxRealDataValues =
-
-        open Deedle
-        open FSharpAux
-        open System.IO
-        
-        let wantedColumns = [|"N14Params";"N15Params"|] |> Set.ofArray
-        
-        let allFilesAcclimation = 
-            [|yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_3h\quantFiles"); 
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_15m\quantFiles");
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_day2\quantFiles");
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_day4\quantFiles");
-              |]
-            |> Array.concat
-        
-        let allFilesControl =
-            Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\control\quantFiles")
-        
-        let allFilesDeAcclimation =
-            [|yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_3h\quantFiles"); 
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_15m\quantFiles");
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_day2\quantFiles");
-              yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_day4\quantFiles");
-              |]
-            |> Array.concat
-        
-        let allFilesCombined = 
-            [|allFilesAcclimation; allFilesControl; allFilesDeAcclimation|]
-            |> Array.concat
-        
-        //let read = Frame.ReadCsv (@"C:\Users\Freym\Desktop\RAW\Acclimation_3h\quantFiles\181005_cold2_3h_GD2_01_8996.quant",separators="\t")
-        let readFrom (path:string) = Frame.ReadCsv (path,separators="\t")
-        
-        type Gaussian = {
-            Mean        : float
-            Sigma       : float
-            Intensity   : float
-            }
-        
-        type EMGaussian = {
-            Mean        : float
-            Sigma       : float
-            Intensity   : float
-            Tau         : float
-            }
-        
-        let createGaussian mean sigma intensity = {
-            Mean = mean
-            Sigma = sigma
-            Intensity = intensity
-            }
-        
-        let createEMGaussian mean sigma intensity tau = {
-            Mean = mean
-            Sigma = sigma
-            Intensity = intensity
-            Tau = tau
-            }
-
 module RealDataValues =
-    
+
+    module AuxFunctions =
+
+        module AuxRealDataValues =
+             
+            open Deedle
+            open FSharpAux
+            open System.IO
+            
+            let wantedColumns = [|"N14Params";"N15Params"|] |> Set.ofArray
+            
+            let allFilesAcclimation = 
+                [|yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_3h\quantFiles"); 
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_15m\quantFiles");
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_day2\quantFiles");
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\Acclimation_day4\quantFiles");
+                  |]
+                |> Array.concat
+            
+            let allFilesControl =
+                Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\control\quantFiles")
+            
+            let allFilesDeAcclimation =
+                [|yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_3h\quantFiles"); 
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_15m\quantFiles");
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_day2\quantFiles");
+                  yield Directory.GetFiles(@"C:\Users\Freym\source\repos\CSBiology\CsbScaffold\PeakSimulation\data\MassSpecRealData_ForPeakSimulation\De-acclimation_day4\quantFiles");
+                  |]
+                |> Array.concat
+            
+            let allFilesCombined = 
+                [|allFilesAcclimation; allFilesControl; allFilesDeAcclimation|]
+                |> Array.concat
+            
+            //let read = Frame.ReadCsv (@"C:\Users\Freym\Desktop\RAW\Acclimation_3h\quantFiles\181005_cold2_3h_GD2_01_8996.quant",separators="\t")
+            let readFrom (path:string) = Frame.ReadCsv (path,separators="\t")
+            
+            type Gaussian = {
+                Mean        : float
+                Sigma       : float
+                Intensity   : float
+                }
+            
+            type EMGaussian = {
+                Mean        : float
+                Sigma       : float
+                Intensity   : float
+                Tau         : float
+                }
+            
+            let createGaussian mean sigma intensity = {
+                Mean = mean
+                Sigma = sigma
+                Intensity = intensity
+                }
+            
+            let createEMGaussian mean sigma intensity tau = {
+                Mean = mean
+                Sigma = sigma
+                Intensity = intensity
+                Tau = tau
+                }
+
     open AuxFunctions.AuxRealDataValues
     open Deedle
     open FSharpAux
