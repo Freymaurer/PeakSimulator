@@ -17,7 +17,10 @@
     <EmbeddedResource Remove="Scripts\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="RealDataValues.fs" />
+    <Compile Include="RealDataBinning.fs" />
+    <Compile Include="SimulatedXic.fs" />
+    <Compile Include="ChromatogramGenerator.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>

@@ -27,6 +27,7 @@ NUGET
       FSharp.Core (>= 4.0.1.7-alpha) - restriction: || (&& (== net45) (>= netstandard1.6)) (&& (== net47) (>= netstandard1.6)) (== netcoreapp2.1) (== netstandard2.0)
       NETStandard.Library (>= 1.6) - restriction: || (&& (== net45) (>= netstandard1.6)) (&& (== net47) (>= netstandard1.6)) (== netcoreapp2.1) (== netstandard2.0)
     CommandLineParser (2.5) - restriction: || (&& (== net45) (>= net461) (>= netstandard2.0)) (&& (== net45) (>= netcoreapp2.0)) (&& (== net47) (== netstandard2.0)) (&& (== net47) (>= netstandard2.0)) (== netcoreapp2.1) (&& (== netstandard2.0) (>= net461)) (&& (== netstandard2.0) (>= netcoreapp2.0))
+    Deedle (2.0.4)
     dotnet-fake (5.13.7) - clitool: true
       Fake.Core.CommandLineParsing (>= 5.13.7) - restriction: || (&& (== net45) (>= netcoreapp2.0)) (&& (== net47) (>= netcoreapp2.0)) (== netcoreapp2.1) (&& (== netstandard2.0) (>= netcoreapp2.0))
       Fake.Runtime (>= 5.13.7) - restriction: || (&& (== net45) (>= netcoreapp2.0)) (&& (== net47) (>= netcoreapp2.0)) (== netcoreapp2.1) (&& (== netstandard2.0) (>= netcoreapp2.0))
