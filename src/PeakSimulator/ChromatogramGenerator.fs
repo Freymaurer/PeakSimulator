@@ -225,7 +225,7 @@ module ChromatogramGenerator =
         | false -> if paramArr.Length <> 17 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
         | true -> if paramArr.Length <> 9 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
         if filePath.EndsWith @"\" = false then failwith @"filepath must end with \ (backslash)"
-        if n = 1 then failwith "chromatogramToCSV function must have at least n = 2"
+        //if n = 1 then failwith "chromatogramToCSV function must have at least n = 2"
         let matchRealDataId (value:float) =
             match value with
             | 1. -> NumberOne
@@ -270,27 +270,6 @@ module ChromatogramGenerator =
             |> Array.mapi (fun i (noisyArr,codedStr,emgaussians) -> i,(noisyArr |> Array.map fst), (noisyArr|> Array.map snd), codedStr, emgaussians
                           )
             |> Array.map (fun (id,xPos,yNoisy,codedStr,emgaussians) -> createLabeledSimulatedXic id xPos yNoisy codedStr emgaussians)
-        //here will be imaging part
-            //|> fun x -> x.[0]
-            //|> fun (gausInfo) -> Array.zip3 gausInfo.CodedStringArray gausInfo.XPosition gausInfo.NoisyXicIntensity 
-            //|> fun arr ->   Array.filter (fun (x,y,z) -> x = "P") arr, Array.filter (fun (x,y,z) -> (String.contains "A" x )= true) arr,
-            //                Array.filter (fun (x,y,z) -> (String.contains "PP" x )= true) arr, Array.filter (fun (x,y,z) -> (String.contains "LE" x ) = true || (String.contains "RE" x ) = true ) arr,
-            //                Array.filter (fun (x,y,z) -> x = "X" ) arr, 
-            //                Array.filter (fun (x,y,z) -> x <> "P" && x <> "X" && (String.contains "PP" x ) = false && (String.contains "A" x )= false && (String.contains "LE" x ) = false && (String.contains "RE" x ) = false) arr
-            //|> fun (p,a,pp,lere,x,rest) ->   [
-            //                                    (Array.unzip3 p |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Part Of Peak", Labels = str, Opacity = 0.8) ) )
-            //                                    (Array.unzip3 a |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Apex", Labels = str) ) )
-            //                                    (Array.unzip3 pp |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Overlap", Labels = str) ) )
-            //                                    (Array.unzip3 lere |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Left End/Right End", Labels = str) ) )
-            //                                    (Array.unzip3 x |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Not Part Of Peak", Labels = str, Opacity = 0.8) ) )
-            //                                    (Array.unzip3 rest |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Rest", Labels = str, Opacity = 0.5) ) )
-    
-            //                                ]
-            //|> Chart.Combine
-            //|> Chart.withSize (1000.,600.)
-            //|> Chart.Show
-        ////here end imaging part
-            //|> Array.map (fun (id,xPos,yNoisy,codedStr,emgaussians) -> createCsvSimulatedXic id xPos yNoisy codedStr emgaussians)
             |> Seq.ofArray
             |> Seq.toCSV "," true
             |> fun x -> if paramArr.Length = 17 then Seq.append [sprintf "# VersionNo. 1
