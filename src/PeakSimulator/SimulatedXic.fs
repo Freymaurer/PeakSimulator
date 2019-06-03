@@ -176,7 +176,8 @@ module SimulatePeak =
             let getRelativeFilePath str =
                 let sourceDir = __SOURCE_DIRECTORY__
                 let parentDir = Directory.GetParent(sourceDir)
-                parentDir.FullName + @"\" + str
+                let getGrandParentDir = Directory.GetParent(parentDir.FullName)
+                getGrandParentDir.FullName + @"\" + str
     
             let readDistributionInfo (path:string) = 
                 
@@ -218,21 +219,21 @@ module SimulatePeak =
             let NumberOne = {
                 GausDataInfo = createGausData 250. 
                                               2201996.
-                                              (readDistributionInfo (getRelativeFilePath @"data\ONEIntensityGausBinMap.txt"))
+                                              (readDistributionInfo (getRelativeFilePath @"material\ONEIntensityGausBinMap.txt"))
                                               6009.892902 // IntensityBandwidth
-                                              (readDistributionInfo (getRelativeFilePath @"data\ONESigmaGausBinMap.txt"))
+                                              (readDistributionInfo (getRelativeFilePath @"material\ONESigmaGausBinMap.txt"))
                                               0.05955576528 // SigmaBandwidth
-                                              (readDistributionInfo (getRelativeFilePath @"data\ONEMeanGausBinMap.txt"))
+                                              (readDistributionInfo (getRelativeFilePath @"material\ONEMeanGausBinMap.txt"))
                                               67.591528 // MeanBandwidth
                 EMGDataInfo = createEMGData 250. 
                                             4279175. 
-                                            (readDistributionInfo (getRelativeFilePath @"data\ONEIntensityEMGBinMap.txt")) 
+                                            (readDistributionInfo (getRelativeFilePath @"material\ONEIntensityEMGBinMap.txt")) 
                                             12372.99079 // emgIntensityBandwidth
-                                            (readDistributionInfo (getRelativeFilePath @"data\ONESigmaEMGBinMap.txt")) 
+                                            (readDistributionInfo (getRelativeFilePath @"material\ONESigmaEMGBinMap.txt")) 
                                             0.02911801746 // emgSigmaBandwidth
-                                            (readDistributionInfo (getRelativeFilePath @"data\ONETauEMGBinMap.txt"))
+                                            (readDistributionInfo (getRelativeFilePath @"material\ONETauEMGBinMap.txt"))
                                             0.04925507138 // emgTauBandwidth
-                                            (readDistributionInfo (getRelativeFilePath @"data\ONEMeanEMGBinMap.txt"))
+                                            (readDistributionInfo (getRelativeFilePath @"material\ONEMeanEMGBinMap.txt"))
                                             53.03298668 // emgMeanBandwidth
                 }
     
@@ -761,7 +762,7 @@ module SimulatePeak =
         let createRndPeakArray numberOfPeaks peaksContinuous (emgPropability: float) meanFrom meanTo intensityFrom intensityTo intensityNoiseStdv sigmaMean sigmaStdv tauMean tauStdv windowSize (whiteNoiseMean:float) whiteNoiseStdv minDistancePeaks minDifferenceIntensity = 
             
             if minDifferenceIntensity <= 1. then failwith "minDifferenceIntensity should not be below/equal 1, this can lead to problems with peakdetermination"
-            let intensityDistribution = RealData.getStandardIntensityDistribution (RealData.getRelativeFilePath "data\StandardIntensityDistribution.txt")
+            let intensityDistribution = RealData.getStandardIntensityDistribution (RealData.getRelativeFilePath "material\StandardIntensityDistribution.txt")
             let blankFrameArray = createFrameArray meanFrom meanTo windowSize
 
             /////////Start main functions/////////////////////////////////////////////////////////////////////////////////////////////////////////////
