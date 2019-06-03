@@ -1,5 +1,6 @@
 namespace PeakSimulator
 
+
 open FSharpAux
 open FSharp.Stats
 open PeakSimulator
@@ -214,17 +215,17 @@ module ChromatogramGenerator =
     open SimulatePeak.FromRealData
     open FSharpAux.IO
 
-    ///This function returns simulated peak array.
+    ///This function returns simulated peak array save in a .csv file.
     ///The function can create peaks based on random variables or on real data distributions. Depending on the chosen option the function takes paramArrays of different length.
-    ///REALDATA: n = number of peak distributions; fromPremade = true; paramArr = NumberOfPeaks, continuousPeaks, RealData-ID (1.), IntensityNoiseStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity; filePate = @"C:\path\".
-    ///RANDOMDATA: n = number of peak distributions; fromPremade = false; paramArr = NumberOfPeaks, continuousPeaks, emgPropability, meanFrom, meanTo, intensityFrom, intensityTo, 
+    ///REALDATA: n = number of peak distributions (minimum 2); fromPremade = true; paramArr = NumberOfPeaks, continuousPeaks, RealData-ID (1.), IntensityNoiseStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity; filePate = @"C:\path\".
+    ///RANDOMDATA: n = number of peak distributions (minimum 2); fromPremade = false; paramArr = NumberOfPeaks, continuousPeaks, emgPropability, meanFrom, meanTo, intensityFrom, intensityTo, 
     ///intensityNoiseStdv, sigmaMean, sigmaStdv, tauMean, tauStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity 
     let chromatogramToCSV n (fromPremade:bool) (paramArr:float []) (filePath: string)=
         match fromPremade with
         | false -> if paramArr.Length <> 17 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
         | true -> if paramArr.Length <> 9 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
         if filePath.EndsWith @"\" = false then failwith @"filepath must end with \ (backslash)"
-        if n = 1 then failwith "must have at least n = 2"
+        if n = 1 then failwith "chromatogramToCSV function must have at least n = 2"
         let matchRealDataId (value:float) =
             match value with
             | 1. -> NumberOne
@@ -307,16 +308,16 @@ module ChromatogramGenerator =
         createCodedGausWithNoises
     
 
-    ///This function returns simulated peak array.
+    ///This function returns simulated peak array displays as point chart.
     ///The function can create peaks based on random variables or on real data distributions. Depending on the chosen option the function takes paramArrays of different length.
-    ///REALDATA: n = number of peak distributions; fromPremade = true; paramArr = NumberOfPeaks, continuousPeaks, RealData-ID (1.), IntensityNoiseStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity; filePate = @"C:\path\".
-    ///RANDOMDATA: n = number of peak distributions; fromPremade = false; paramArr = NumberOfPeaks, continuousPeaks (0. = false,1. = true), emgPropability (0-1 in percent), meanFrom, meanTo, intensityFrom, intensityTo, 
+    ///REALDATA: n = number of peak distributions (minimum 2); fromPremade = true; paramArr = NumberOfPeaks, continuousPeaks, RealData-ID (1.), IntensityNoiseStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity; filePate = @"C:\path\".
+    ///RANDOMDATA: n = number of peak distributions (minimum 2); fromPremade = false; paramArr = NumberOfPeaks, continuousPeaks, emgPropability, meanFrom, meanTo, intensityFrom, intensityTo, 
     ///intensityNoiseStdv, sigmaMean, sigmaStdv, tauMean, tauStdv, windowSize, whiteNoiseMean, whiteNoiseStdv, minDistancePeaks, minDifferenceIntensity 
     let chromatogramToImg n (fromPremade:bool) (paramArr:float []) =
         match fromPremade with
         | false -> if paramArr.Length <> 17 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
         | true -> if paramArr.Length <> 9 then failwith "paramArr must have either 9 parameters for PeakSimulation from RealData distributions or 17 for random PeakSimulation!" 
-        if n = 1 then failwith "must have at least n = 2"
+        //if n = 1 then failwith "chromatogramToImg function must have at least n = 2"
         let matchRealDataId (value:float) =
             match value with
             | 1. -> NumberOne
@@ -361,41 +362,25 @@ module ChromatogramGenerator =
             |> Array.mapi (fun i (noisyArr,codedStr,emgaussians) -> i,(noisyArr |> Array.map fst), (noisyArr|> Array.map snd), codedStr, emgaussians
                           )
             |> Array.map (fun (id,xPos,yNoisy,codedStr,emgaussians) -> createLabeledSimulatedXic id xPos yNoisy codedStr emgaussians)
-        //here will be imaging part
-            |> fun x -> x.[0]
-            |> fun (gausInfo) -> Array.zip3 gausInfo.CodedStringArray gausInfo.XPosition gausInfo.NoisyXicIntensity 
-            |> fun arr ->   Array.filter (fun (x,y,z) -> x = "P") arr, Array.filter (fun (x,y,z) -> (String.contains "A" x )= true) arr,
-                            Array.filter (fun (x,y,z) -> (String.contains "PP" x )= true) arr, Array.filter (fun (x,y,z) -> (String.contains "LE" x ) = true || (String.contains "RE" x ) = true ) arr,
-                            Array.filter (fun (x,y,z) -> x = "X" ) arr, 
-                            Array.filter (fun (x,y,z) -> x <> "P" && x <> "X" && (String.contains "PP" x ) = false && (String.contains "A" x )= false && (String.contains "LE" x ) = false && (String.contains "RE" x ) = false) arr
-            |> fun (p,a,pp,lere,x,rest) ->   [
-                                                (Array.unzip3 p |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Part Of Peak", Labels = str, Opacity = 0.8) ) )
-                                                (Array.unzip3 a |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Apex", Labels = str) ) )
-                                                (Array.unzip3 pp |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Overlap", Labels = str) ) )
-                                                (Array.unzip3 lere |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Left End/Right End", Labels = str) ) )
-                                                (Array.unzip3 x |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Not Part Of Peak", Labels = str, Opacity = 0.8) ) )
-                                                (Array.unzip3 rest |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Rest", Labels = str, Opacity = 0.5) ) )
+            |> Array.map (fun (gausInfo) -> Array.zip3 gausInfo.CodedStringArray gausInfo.XPosition gausInfo.NoisyXicIntensity 
+                                            |> fun arr ->   Array.filter (fun (x,y,z) -> x = "P") arr, Array.filter (fun (x,y,z) -> (String.contains "A" x )= true) arr,
+                                                            Array.filter (fun (x,y,z) -> (String.contains "PP" x )= true) arr, Array.filter (fun (x,y,z) -> (String.contains "LE" x ) = true || (String.contains "RE" x ) = true ) arr,
+                                                            Array.filter (fun (x,y,z) -> x = "X" ) arr, 
+                                                            Array.filter (fun (x,y,z) -> x <> "P" && x <> "X" && (String.contains "PP" x ) = false && (String.contains "A" x )= false && (String.contains "LE" x ) = false && (String.contains "RE" x ) = false) arr
+                                            |> fun (p,a,pp,lere,x,rest) ->   [
+                                                                                (Array.unzip3 p |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Part Of Peak", Labels = str, Opacity = 0.8) ) )
+                                                                                (Array.unzip3 a |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Apex", Labels = str) ) )
+                                                                                (Array.unzip3 pp |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Overlap", Labels = str) ) )
+                                                                                (Array.unzip3 lere |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Left End/Right End", Labels = str) ) )
+                                                                                (Array.unzip3 x |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Not Part Of Peak", Labels = str, Opacity = 0.8) ) )
+                                                                                (Array.unzip3 rest |> (fun (str,x,y) -> Chart.Point (x,y,Name = "Rest", Labels = str, Opacity = 0.5) ) )
     
-                                            ]
-            |> Chart.Combine
-            |> Chart.withSize (1000.,600.)
-            |> Chart.Show
-        ////here end imaging part
-            //|> Array.map (fun (id,xPos,yNoisy,codedStr,emgaussians) -> createCsvSimulatedXic id xPos yNoisy codedStr emgaussians)
-            //|> Seq.ofArray
-            //|> Seq.toCSV "," true
-            //|> fun x -> if paramArr.Length = 17 then Seq.append [sprintf "# VersionNo. 1
-            //                             # NumberOfPeaks = %A; Continuous Peaks = %A; EMGPropability = %A; MeanFrom-MeanTo = %A - %A; IntensityFrom-IntensityTO = %A - %A; IntensityNoiseStdv = %A;
-            //                             # SigmaMean = %A; SigmaStdv = %A; TauMean = = %A; TauStdv = %A; Windowsize = %A; WhiteNoiseMean = %A; WhiteNoiseStdv = %A; Minimal distance between two peaks = %A sigma; minimal intensity difference at apex = %A" (int paramArr.[0]) paramArr.[1] paramArr.[2] paramArr.[3] paramArr.[4] paramArr.[5] paramArr.[6] paramArr.[7] paramArr.[8] paramArr.[9] paramArr.[10] paramArr.[11] paramArr.[12] paramArr.[13] paramArr.[14] paramArr.[15] paramArr.[16]
-            //                                                    ] x
-            //            elif paramArr.Length = 9 then Seq.append [sprintf "# VersionNo. 1
-            //                              # NumberOfPeaks = %A; Continuous Peaks = %A; Origin RealDataSet for Parameters = %A; IntensityNoiseStdv = %A;
-            //                              # Windowsize = %A; WhiteNoiseMean = %A; WhiteNoiseStdv = %A; Minimal distance between two peaks = %A sigma; minimal intensity difference at apex = %A" (int paramArr.[0]) paramArr.[1] paramArr.[2] paramArr.[3] paramArr.[4] paramArr.[5] paramArr.[6] paramArr.[7] paramArr.[8]
-            //                                                     ] x
-            //            else failwith "ParamArr must have length 8 or 16!"
-            /////takes most of the time
-            //|> Seq.write (filePath + (sprintf @"%A-%A-%A" System.DateTime.UtcNow.Year System.DateTime.UtcNow.Month System.DateTime.UtcNow.Day) + @"_SimulatedXics" + (String.replace ":" "-" (sprintf @"_%A" System.DateTime.UtcNow.TimeOfDay)) + @".csv" )
-       
+                                                                            ]
+                                            |> Chart.Combine
+                                            |> Chart.withSize (1000.,600.)
+                                            |> Chart.Show
+                         )
+
         createCodedGausWithNoises
     
     
