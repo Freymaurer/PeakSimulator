@@ -568,7 +568,7 @@ module SimulatePeak =
                 let parseToPeakFeature (xValue,xInd) =
                     createPeakFeature xInd xValue yData.[xInd]
                 if apex.Length <> peaks.Length then failwith "Error 04"
-                if xDataForEachPeak.Length <> peaks.Length then  failwith (sprintf "Error 03; different array lengths: peaksData = %i; peaks = %i" peaksData.Length peaks.Length)
+                if xDataForEachPeak.Length <> peaks.Length then failwith (sprintf "Error 03; different array lengths: peaksData = %i; peaks = %i" peaksData.Length peaks.Length)
                 [| for i = 0 to (peaks.Length-1) do 
                     yield createIdentifiedPeak  apex.[i]
                                                 leftLiftOff.[i] 
